@@ -14,23 +14,23 @@ def reportdiffs(unique1, unique2, dir1, dir2, diffs):
         for file in unique1:
             root = os.path.join(dir1,file)
             if os.path.isfile(root):
-                print '  <<< unique ',root
+                print('  <<< unique ',root)
                 diffs.append(0)
             else:
                 for root, dir, files in os.walk(root):
                     for file in files:
-                        print '  <<< unique ',os.path.join(root,file)
+                        print('  <<< unique ',os.path.join(root,file))
                         diffs.append(0)                
     if unique2:
         for file in unique2:
             root = os.path.join(dir2,file)
             if os.path.isfile(root):
-                print '  >>> unique ',root
+                print('  >>> unique ',root)
                 diffs.append(0)
             else:
                 for root, dir, files in os.walk(root):
                     for file in files:
-                        print '  >>> unique ',os.path.join(root,file)
+                        print('  >>> unique ',os.path.join(root,file))
                         diffs.append(0)
 
 def difference(seq1, seq2):
@@ -81,12 +81,12 @@ def comparetrees(dir1, dir2, diffs):
                 bytes1 = file1.read(blocksize)
                 bytes2 = file2.read(blocksize)
                 if (not bytes1) and (not bytes2):   # same file
-                    print '  100 matches','/'.join(path1.split('/')[1:])
+                    print('  100 matches','/'.join(path1.split('/')[1:]))
                     diffs.append(100)
                     break
                 if bytes1 != bytes2:    # different content
                     score = ssdeep.compare(ssdeep.hash_from_file(path1),ssdeep.hash_from_file(path2))
-                    print str(score).rjust(5),'differs','/'.join(path1.split('/')[1:])
+                    print(str(score).rjust(5),'differs','/'.join(path1.split('/')[1:]))
                     diffs.append(score)
                     break
 
@@ -108,11 +108,11 @@ def getargs():
     try:
         dir1, dir2 = sys.argv[1:]
     except:
-        print '\
+        print('\
   \nBinwally: Binary and Directory tree comparison tool\
   \n          using the Fuzzy Hashing concept (ssdeep)\n\
   \nBernardo Rodrigues, http://w00tsec.blogspot.com\n\
-  \nUsage: python %s dir1 dir2' % os.path.basename(sys.argv[0])+'\n'
+  \nUsage: python %s dir1 dir2' % os.path.basename(sys.argv[0])+'\n')
         sys.exit(1)
     else:
         return (dir1, dir2)
@@ -124,22 +124,22 @@ if __name__ == '__main__':
 
     # command line arguments are both dirs
     if os.path.isdir(dir1) & os.path.isdir(dir2):
-        print '\nSCORE RESULT  PATH'
+        print('\nSCORE RESULT  PATH')
         comparetrees(dir1, dir2, diffs)
         if not diffs:
             print('No diffs found\n')
         else:
             for score in diffs:
                 totalscore += score
-            print '\nTotal files compared:',len(diffs)
-            print 'Overall match score: ',str(totalscore/len(diffs))+'%\n'
+            print('\nTotal files compared:',len(diffs))
+            print('Overall match score: ',str(totalscore/len(diffs))+'%\n')
     else:
         try:
             # command line arguments are both files
             score = ssdeep.compare(ssdeep.hash_from_file(dir1),ssdeep.hash_from_file(dir2))
-            print 'Overall match score: ',str(score)+'%\n'
+            print('Overall match score: ',str(score)+'%\n')
 
         except:
-            print 'Invalid Files/Folders: Aborting...'
+            print('Invalid Files/Folders: Aborting...')
             sys.exit(1)
 
